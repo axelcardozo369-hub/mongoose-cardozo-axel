@@ -1,18 +1,28 @@
 import { model, Schema } from "mongoose";
-const userSchema = new Schema({
-  username: {
-    type: String,
-    required: true,
+const userSchema = new Schema(
+  {
+    username: {
+      type: String,
+      required: true,
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+    isActive: {
+      type: Boolean,
+      default: false,
+    },
   },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
+  //para darle el borrado logico
+  {
+    timestamps: true,
   },
-  password: {
-    type: String,
-    required: true,
-  },
-});
+);
 
 export const UserModel = model("User", userSchema);
