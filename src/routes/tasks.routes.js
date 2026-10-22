@@ -6,10 +6,12 @@ import {
   getIdtasks,
   updateTasks,
 } from "../controllers/tasks.controller.js";
+import { validate } from "../middlewares/validate.js";
+import { agregateTasksValidation } from "../middlewares/validations/tasks.validation.js";
 
 export const tasksRouter = Router();
-tasksRouter.get("/api/tasks", getAllTasks);
-tasksRouter.get("/api/tasks/:id", getIdtasks);
-tasksRouter.post("/api/tasks", agregateTasks);
-tasksRouter.delete("/api/tasks/:id", deleteTasks);
-tasksRouter.put("/api/tasks/:id", updateTasks);
+tasksRouter.get("/tasks", getAllTasks);
+tasksRouter.get("/tasks/:id", getIdtasks);
+tasksRouter.post("/tasks", agregateTasksValidation, validate, agregateTasks);
+tasksRouter.delete("/tasks/:id", deleteTasks);
+tasksRouter.put("/tasks/:id", updateTasks);

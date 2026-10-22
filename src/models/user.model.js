@@ -14,12 +14,7 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
-    isActive: {
-      type: Boolean,
-      default: false,
-    },
   },
-  //para darle el borrado logico
   {
     timestamps: true,
   },

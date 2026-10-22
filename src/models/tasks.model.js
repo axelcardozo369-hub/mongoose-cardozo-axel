@@ -19,6 +19,7 @@ const taskSchema = new Schema(
       {
         type: Types.ObjectId,
         ref: "Tag",
+        required: true,
       },
     ],
     isActive: {
