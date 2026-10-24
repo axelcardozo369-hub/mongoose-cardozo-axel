@@ -90,13 +90,3 @@ tarea que ya existe, sin tener que mandar la tarea completa de nuevo.
 
 En el controlador uso `findByIdAndUpdate` con el operador `$addToSet`, que agrega el
 id de la etiqueta al arreglo `tags` de la tarea solo si todavía no está.
-
-Antes de llegar al controlador, la validación (`addTagValidation`) revisa:
-
-- que los dos ids sean ObjectId válidos (`isMongoId()`),
-- que la tarea exista y esté activa (`custom()`),
-- que la etiqueta exista y esté activa (`custom()`),
-- que la tarea no tenga ya esa etiqueta, para no duplicar el vínculo (`custom()`).
-
-Si alguna de estas validaciones falla, responde con código 400 y el mensaje del
-error. Si todo está bien, responde 200 con la tarea actualizada y sus etiquetas.
