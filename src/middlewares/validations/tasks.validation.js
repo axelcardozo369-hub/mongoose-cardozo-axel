@@ -43,16 +43,15 @@ export const deleteTasksValidation = [
     .isMongoId()
     .withMessage("el id debe ser valido")
     .bail()
-    .isMongoId()
-    .withMessage("el id debe ser valido")
     .custom(async (id) => {
-      const idExiste = await TagModel.findOne({ _id: id });
+      const idExiste = await TaskModel.findOne({ _id: id, isActive: true });
       if (!idExiste) {
         throw new Error("el id que quieres borrar no existe ");
       }
     }),
 ];
 export const updateTasksValidation = [
+  param("id").isMongoId().withMessage("el id debe ser valido").bail(),
   body("title")
     .optional()
     .notEmpty()
@@ -61,21 +60,7 @@ export const updateTasksValidation = [
   body("description")
     .optional()
     .notEmpty()
-    .withMessage("la description debe ser obligatorio")
-    .bail(),
-  body("owner")
-    .optional()
-    .notEmpty()
-    .withMessage("el dueño debe ser obligatorio")
-    .bail()
-    .isMongoId()
-    .withMessage("el id del user debe ser valido")
-    .custom(async (id) => {
-      const dueñoExiste = await UserModel.findOne({ _id: id });
-      if (!dueñoExiste) {
-        throw new Error("el id del dueño no existe");
-      }
-    }),
+    .withMessage("la description debe ser obligatorio"),
   body("tags")
     .optional()
     .notEmpty()
