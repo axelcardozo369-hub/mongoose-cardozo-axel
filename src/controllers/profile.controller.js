@@ -1,9 +1,13 @@
 import { matchedData } from "express-validator";
 import { ProfileModel } from "../models/profile.model.js";
-matchedData;
+import { UserModel } from "../models/user.model.js";
+
 export const getAllProfiles = async (req, res) => {
   try {
-    const Profiles = await ProfileModel.find();
+    const Profiles = await ProfileModel.find({ isActive: true }).populate(
+      "user",
+      "username email",
+    );
     return res
       .status(200)
       .json({ message: "estos son todos los Profiles", data: Profiles });
@@ -17,7 +21,10 @@ export const getAllProfiles = async (req, res) => {
 export const getIdProfiles = async (req, res) => {
   try {
     const { id } = req.params;
-    const Profile = await ProfileModel.findById(id);
+    const Profile = await ProfileModel.findOne({
+      _id: id,
+      isActive: true,
+    }).populate("user", "username email");
     return res
       .status(200)
       .json({ message: "Profile encontrada ", data: Profile });
@@ -32,6 +39,9 @@ export const agregateProfiles = async (req, res) => {
   try {
     const validationData = matchedData(req, { locations: ["body"] });
     const newProfile = await ProfileModel.create(validationData);
+    await UserModel.findByIdAndUpdate(newProfile.user, {
+      profile: newProfile._id,
+    });
     return res
       .status(201)
       .json({ message: "Profile agregado con exito ", data: newProfile });
@@ -45,7 +55,11 @@ export const agregateProfiles = async (req, res) => {
 export const deleteProfiles = async (req, res) => {
   try {
     const { id } = req.params;
-    const deleteProfile = await ProfileModel.findByIdAndDelete(id);
+    const deleteProfile = await ProfileModel.findByIdAndUpdate(
+      id,
+      { isActive: false },
+      { returnDocument: "after" },
+    );
 
     return res
       .status(200)

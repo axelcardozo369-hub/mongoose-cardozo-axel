@@ -10,11 +10,13 @@ const taskSchema = new Schema(
       type: String,
       required: true,
     },
+    //mi relacion de 1:N de usuario con tareas
     owner: {
       type: Types.ObjectId,
       ref: "User",
       required: true,
     },
+    //mi realcion de N:M de tareas con etiqueta
     tags: [
       {
         type: Types.ObjectId,

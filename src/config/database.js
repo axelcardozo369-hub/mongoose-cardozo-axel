@@ -3,7 +3,10 @@ import mongoose, { connect } from "mongoose";
 export const startDataBase = async () => {
   try {
     await mongoose.connect(`${process.env.MONGO_URL}`);
-    await mongoose.connection.dropCollection("users");
+    // await mongoose.connection.dropCollection("users");
+    // await mongoose.connection.dropCollection("profiles");
+    // await mongoose.connection.dropCollection("tasks");
+    // await mongoose.connection.dropCollection("tags");
     // await mongoose.connection.dropDatabase();
     console.log("conexion con mongo con exito ");
   } catch (error) {

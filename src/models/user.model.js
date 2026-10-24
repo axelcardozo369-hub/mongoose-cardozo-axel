@@ -1,4 +1,4 @@
-import { model, Schema } from "mongoose";
+import { model, Schema, Types } from "mongoose";
 const userSchema = new Schema(
   {
     username: {
@@ -13,6 +13,20 @@ const userSchema = new Schema(
     password: {
       type: String,
       required: true,
+    },
+    profile: {
+      type: Types.ObjectId,
+      ref: "Profile",
+    },
+    tasks: [
+      {
+        type: Types.ObjectId,
+        ref: "Task",
+      },
+    ],
+    isActive: {
+      type: Boolean,
+      default: true,
     },
   },
   {

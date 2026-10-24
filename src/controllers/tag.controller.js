@@ -1,8 +1,10 @@
 import { matchedData } from "express-validator";
 import { TagModel } from "../models/tag.model.js";
+import { TaskModel } from "../models/tasks.model.js";
+
 export const getAllTags = async (req, res) => {
   try {
-    const Tags = await TagModel.find();
+    const Tags = await TagModel.find({});
     return res
       .status(200)
       .json({ message: "estos son todos los Tagss", data: Tags });
@@ -39,7 +41,13 @@ export const agregateTags = async (req, res) => {
 export const deleteTags = async (req, res) => {
   try {
     const { id } = req.params;
-    const deleteTags = await TagModel.findByIdAndDelete(id);
+    const deleteTags = await TagModel.findByIdAndUpdate(
+      id,
+      { isActive: false },
+      { returnDocument: "after" },
+    );
+    //pull lo que hace es sacar los id de todas las tasks
+    await TaskModel.updateMany({ tags: id }, { $pull: { tags: id } });
 
     return res
       .status(200)

@@ -1,8 +1,11 @@
 import { matchedData } from "express-validator";
 import { TaskModel } from "../models/tasks.model.js";
+import { UserModel } from "../models/user.model.js";
 export const getAllTasks = async (req, res) => {
   try {
-    const Tasks = await TaskModel.find();
+    const Tasks = await TaskModel.find({ isActive: true })
+      .populate("owner", "username email")
+      .populate("tags", "name");
     return res
       .status(200)
       .json({ message: "estos son todos los Tasks", data: Tasks });
@@ -15,7 +18,9 @@ export const getAllTasks = async (req, res) => {
 export const getIdtasks = async (req, res) => {
   try {
     const { id } = req.params;
-    const task = await TaskModel.findById(id);
+    const task = await TaskModel.findOne({ _id: id, isActive: true })
+      .populate("owner", "username email")
+      .populate("tags", "name");
     return res.status(200).json({ message: "task encontrada ", data: task });
   } catch (error) {
     return res
@@ -27,6 +32,10 @@ export const agregateTasks = async (req, res) => {
   try {
     const validationData = matchedData(req, { locations: ["body"] });
     const newTasks = await TaskModel.create(validationData);
+
+    await UserModel.findByIdAndUpdate(newTasks.owner, {
+      $addToSet: { tasks: newTasks._id },
+    });
     return res
       .status(201)
       .json({ message: "task agregado con exito ", data: newTasks });
@@ -39,7 +48,11 @@ export const agregateTasks = async (req, res) => {
 export const deleteTasks = async (req, res) => {
   try {
     const { id } = req.params;
-    const deleteTask = await TaskModel.findByIdAndDelete(id);
+    const deleteTask = await TaskModel.findByIdAndUpdate(
+      id,
+      { isActive: false },
+      { returnDocument: "after" },
+    );
 
     return res
       .status(200)

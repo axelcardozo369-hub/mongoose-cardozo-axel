@@ -28,12 +28,12 @@ export const agregateUsersValidation = [
 ];
 export const deleteUsersValidation = [
   param("id")
-    .isInt({ min: 1 })
-    .withMessage("el id debe se un numero positivo")
+    .isMongoId()
+    .withMessage("el id debe ser valido")
     .bail()
     .custom(async (id) => {
-      const idExiste = await UserModel.findOne({ where: { id } });
-      if (idExiste) {
+      const idExiste = await UserModel.findOne({ _id: id, isActive: true });
+      if (!idExiste) {
         throw new Error("el id que quieres borrar no existe ");
       }
     }),

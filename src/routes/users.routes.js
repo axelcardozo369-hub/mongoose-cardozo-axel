@@ -9,6 +9,7 @@ import {
 import { validate } from "../middlewares/validate.js";
 import {
   agregateUsersValidation,
+  deleteUsersValidation,
   updateUsersValidation,
 } from "../middlewares/validations/user.validation.js";
 
@@ -19,4 +20,4 @@ UserRouter.post("/users", agregateUsersValidation, validate, agregateUsers);
 UserRouter.get("/users", getAllUsers);
 UserRouter.get("/users/:id", getIdUsers);
 UserRouter.put("/users/:id", updateUsersValidation, validate, updateUsers);
-UserRouter.delete("/users/:id", deleteUsers);
+UserRouter.delete("/users/:id", deleteUsersValidation, validate, deleteUsers);

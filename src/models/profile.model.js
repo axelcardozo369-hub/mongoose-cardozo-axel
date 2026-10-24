@@ -6,6 +6,7 @@ const profileSchema = new Schema(
       type: String,
       required: true,
     },
+    // aplico mi propiedad enbebida
     address: {
       city: {
         type: String,
@@ -16,6 +17,7 @@ const profileSchema = new Schema(
         required: true,
       },
     },
+    //relacion 1:1 de usuario con perfil
     user: {
       type: Types.ObjectId,
       ref: "User",

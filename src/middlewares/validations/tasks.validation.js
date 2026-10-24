@@ -40,25 +40,31 @@ export const agregateTasksValidation = [
 ];
 export const deleteTasksValidation = [
   param("id")
-    .isInt({ min: 1 })
-    .withMessage("el id debe se un numero positivo")
+    .isMongoId()
+    .withMessage("el id debe ser valido")
     .bail()
     .isMongoId()
     .withMessage("el id debe ser valido")
     .custom(async (id) => {
-      const idExiste = await TagModel.findOne({ id });
+      const idExiste = await TagModel.findOne({ _id: id });
       if (!idExiste) {
         throw new Error("el id que quieres borrar no existe ");
       }
     }),
 ];
 export const updateTasksValidation = [
-  body("title").notEmpty().withMessage("el title es obligatorio").bail(),
+  body("title")
+    .optional()
+    .notEmpty()
+    .withMessage("el title es obligatorio")
+    .bail(),
   body("description")
+    .optional()
     .notEmpty()
     .withMessage("la description debe ser obligatorio")
     .bail(),
   body("owner")
+    .optional()
     .notEmpty()
     .withMessage("el dueño debe ser obligatorio")
     .bail()
