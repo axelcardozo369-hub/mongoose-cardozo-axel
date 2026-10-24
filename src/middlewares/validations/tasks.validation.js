@@ -1,4 +1,5 @@
 import { body, param } from "express-validator";
+import { isValidObjectId } from "mongoose";
 import { TaskModel } from "../../models/tasks.model.js";
 import { UserModel } from "../../models/user.model.js";
 import { TagModel } from "../../models/tag.model.js";
@@ -35,6 +36,41 @@ export const agregateTasksValidation = [
       const tagExiste = await TagModel.findOne({ _id: tagId });
       if (!tagExiste) {
         throw new Error("el id de tag no existe");
+      }
+    }),
+];
+//relacion N:M: valido que existan la task y la tag, y que el vinculo no este repetido
+export const addTagValidation = [
+  param("id")
+    .isMongoId()
+    .withMessage("el id de la task debe ser valido")
+    .bail()
+    .custom(async (id) => {
+      const taskExiste = await TaskModel.findOne({ _id: id, isActive: true });
+      if (!taskExiste) {
+        throw new Error("la task no existe");
+      }
+    }),
+  param("tagId")
+    .isMongoId()
+    .withMessage("el id de la tag debe ser valido")
+    .bail()
+    .custom(async (tagId) => {
+      const tagExiste = await TagModel.findOne({ _id: tagId, isActive: true });
+      if (!tagExiste) {
+        throw new Error("la tag no existe");
+      }
+    })
+    .bail()
+    .custom(async (tagId, { req }) => {
+      //si el id de la task es invalido ya lo avisa la validacion de arriba
+      if (!isValidObjectId(req.params.id)) return;
+      const yaLaTiene = await TaskModel.findOne({
+        _id: req.params.id,
+        tags: tagId,
+      });
+      if (yaLaTiene) {
+        throw new Error("la task ya tiene esa tag");
       }
     }),
 ];

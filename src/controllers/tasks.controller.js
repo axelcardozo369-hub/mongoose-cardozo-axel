@@ -79,3 +79,22 @@ export const updateTasks = async (req, res) => {
       .json({ message: "Error interno del servidor", error: error.message });
   }
 };
+//relacion N:M: agrego una tag a una task que ya existe
+export const addTagToTask = async (req, res) => {
+  try {
+    const { id, tagId } = req.params;
+    //addToSet agrega el id de la tag al arreglo solo si no estaba
+    const task = await TaskModel.findByIdAndUpdate(
+      id,
+      { $addToSet: { tags: tagId } },
+      { returnDocument: "after" },
+    ).populate("tags", "name");
+    return res
+      .status(200)
+      .json({ message: "tag agregada a la task con exito", data: task });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Error interno del servidor", error: error.message });
+  }
+};

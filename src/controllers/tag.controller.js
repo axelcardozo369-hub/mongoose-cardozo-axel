@@ -4,7 +4,7 @@ import { TaskModel } from "../models/tasks.model.js";
 
 export const getAllTags = async (req, res) => {
   try {
-    const Tags = await TagModel.find({});
+    const Tags = await TagModel.find({ isActive: true });
     return res
       .status(200)
       .json({ message: "estos son todos los Tagss", data: Tags });
@@ -17,7 +17,7 @@ export const getAllTags = async (req, res) => {
 export const getIdTags = async (req, res) => {
   try {
     const { id } = req.params;
-    const Tags = await TagModel.findById(id);
+    const Tags = await TagModel.findOne({ _id: id, isActive: true });
     return res.status(200).json({ message: "Tags encontrada ", data: Tags });
   } catch (error) {
     return res
